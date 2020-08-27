@@ -1,0 +1,14 @@
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 16px;
+}
+
+.trends-container {
+    text-align: center !important;
+}
+
+.loader {
+    min-height: 50vh;
+}

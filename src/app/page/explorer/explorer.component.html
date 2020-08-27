@@ -1,0 +1,17 @@
+<div class="">
+    <h2>Genres</h2>
+    <p>Select by genre</p>
+</div>
+<div class="loader" *ngIf="categories == null">Please wait</div>
+<div class="card-container">
+    <app-category-card *ngFor="let genre of categories | async" [category]=genre>
+    </app-category-card>
+</div>
+<div class="trends-container">
+    <h2>Latest trends</h2>
+    <p>What do you want to do next with your app?</p>
+</div>
+<div class="card-container">
+    <app-movie-card *ngFor="let movie of trends | async" [movie]=movie>
+    </app-movie-card>
+</div>

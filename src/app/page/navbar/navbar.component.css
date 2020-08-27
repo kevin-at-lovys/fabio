@@ -1,0 +1,40 @@
+
+  .toolbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: #303336;
+    color: white;
+    z-index: 10;
+    font-weight: 600; 
+  }
+  .toolbar ul{
+      list-style: none;
+        
+  }
+  .toolbar ul li{
+    display: inline-block;
+}
+
+  .toolbar img {
+    margin: 0 16px;
+  }
+
+  .toolbar #twitter-logo {
+    height: 40px;
+    margin: 0 16px;
+  }
+
+  .toolbar #twitter-logo:hover {
+    opacity: 0.8;
+  } 
+   .spacer {
+    flex: 1;
+  }
+  .nav-link{
+      color: white;
+  }

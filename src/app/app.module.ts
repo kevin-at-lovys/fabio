@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +11,8 @@ import { MovieCardComponent } from './movie/movie-card/movie-card.component';
 import { NavbarComponent } from './page/navbar/navbar.component';
 import { FooterComponent } from './page/footer/footer.component';
 import { ContentComponent } from './page/content/content.component';
+import { CategoryCardComponent } from './movie/category-card/category-card.component';
+import { ExplorerComponent } from './page/explorer/explorer.component';
 
 @NgModule({
   declarations: [
@@ -20,11 +23,14 @@ import { ContentComponent } from './page/content/content.component';
     MovieCardComponent,
     NavbarComponent,
     FooterComponent,
-    ContentComponent
+    ContentComponent,
+    CategoryCardComponent,
+    ExplorerComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

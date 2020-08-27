@@ -1,0 +1,77 @@
+.movie-card {
+    max-width: 18rem;
+    width: 18rem;
+    margin: 0.5rem;
+    position: relative;
+}
+
+.movie-card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.title {
+    position: absolute;
+    bottom: 0;
+    color: white;
+    background: rgba(39, 38, 38, 0.664);
+    display: block;
+    width: 100%;
+    padding: 0.7rem;
+    margin: 0;
+}
+
+.favorite {
+    position: absolute;
+    top: 0.2rem;
+    left: 1rem;
+    color: white;
+    z-index: 1000;
+}
+
+.favorite.active {
+    color: rgb(97, 219, 97);
+}
+
+.spin {
+    transform-origin: 50% 60%;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+}
+
+.info {
+    position: absolute;
+    top: 0.2rem;
+    right: 1rem;
+    color: white;
+    z-index: 1000;
+}
+
+.topbar {
+    background: rgba(56, 56, 56, 0.68);
+    width: 100%;
+    min-height: 20% !important;
+    top: 0;
+    position: absolute;
+    display: block;
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
