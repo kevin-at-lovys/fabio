@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ɵConsole } from '@angular/core';
 import { Observable } from "rxjs";
 
 import { MovieDto } from '../models/movie-dto';
@@ -12,7 +12,7 @@ export class MovieService {
   private API_KEY = "0f60ad592a39d4b497a0d8889bba1be2";
 
   private endPoints = {
-    moviesGenres: `https://api.themoviedb.org/3/genre/movie/list?api_key=[API_KEY]&language=[API_LANG]`,
+    moviesGenres: "https://api.themoviedb.org/3/genre/movie/list?api_key=[API_KEY]&language=[API_LANG]",
     moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=878",
     moviesSearch: "https://api.themoviedb.org/3/search/movie?api_key=[api_key]&language=en-US&query=[QUERY]page=[PAGE]include_adult=false",
     lastTrends: "https://api.themoviedb.org/3/trending/movie/week?api_key=[API_KEY]",
@@ -23,7 +23,7 @@ export class MovieService {
 
   constructor(private http: HttpClient) { }
 
-  private prepareUrl(url: string, lang?: string): string {
+  private prepare_url(url: string, lang?: string): string {
     if (!lang || this.acceptedLanguages.indexOf(lang) == -1)
       lang = this.acceptedLanguages[0];
 
@@ -32,7 +32,7 @@ export class MovieService {
 
   async get_last_trends(lang: string = "en-US") {
 
-    const _url = this.prepareUrl(this.endPoints.lastTrends, lang);
+    const _url = this.prepare_url(this.endPoints.lastTrends, lang);
     const movies = [];
     const data = await this.http.get<any>(_url).toPromise();
     if (data.results) {
@@ -40,8 +40,7 @@ export class MovieService {
         movies.push(this.createMovie(result));
       }
     }
-    const result = { meta: { page: data.page, maxPages: data.total_pages }, movies: movies };
-    return result;
+    return movies;
   }
   private createMovie(result: any) {
     let movieDto = new MovieDto();
@@ -52,9 +51,26 @@ export class MovieService {
     movieDto.thumbnailImage = this.endPoints.images + result.backdrop_path;
     return movieDto;
   }
-  get_by_category(): { meta: { page: number, maxPages: number }, movies: MovieDto[] } {
 
-    return null;
+  async get_movie_categories(lang?: string): Promise<{ id_number, name: string }[]> {
+    const _url = this.prepare_url(this.endPoints.moviesGenres, lang);
+    let data;
+    try {
+      data = await this.http.get<any>(_url).toPromise();
+    } catch (ex) {
+      console.error(ex);
+    }
+    return data.genres || [];
+  }
+  async get_movies_by_genre(genre: string, lang?: string) {
+    const _url = this.prepare_url(this.endPoints.moviesByDiscobery, lang);
+    let data;
+    try {
+      data = await this.http.get<any>(_url).toPromise();
+    } catch (ex) {
+      console.error(ex);
+    }
+    return data.movies || [];
   }
 
 }
