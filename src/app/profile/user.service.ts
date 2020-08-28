@@ -39,22 +39,11 @@ export class UserService {
     newUser.favorites = await this.get_favorites(newUser.userId);
     return newUser;
   }
-  private getAlertError(): Observable<any> {
-    return this.subject.asObservable();
-  }
-  success(message: string) {
-    this.subject.next({ type: 'success', text: message });
-  }
 
-  error(message: string) {
-    this.subject.next({ type: 'error', text: message });
+  private async update_user_movies(){
+    this.get_user().favorites = await this.get_favorites(this.get_user().userId);
   }
-
-  clear() {
-    this.subject.next();
-  }
-
-
+  
   async login(username, password) {
     try {
       let _user_data = await firebase.auth().signInWithEmailAndPassword(username, password);
@@ -97,15 +86,20 @@ export class UserService {
     const user = this.get_user();
     const ref = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`);
     try {
-      return await ref.remove();
+      let res = await ref.remove(); 
+      await this.update_user_movies();
+      return res;
     } catch (ex) {
       console.error(ex);
-    }
+    } 
   }
   async add_favorite_movie(movie: MovieDto) {
     const user = this.get_user();
-    return await firebase.database().ref(`favorites/${user.userId}/${movie.id}`).set(movie);
+    let res = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`).set(movie);
+    await this.update_user_movies();
+    return res
   }
+
   has_favorite_movie(movie: MovieDto) {
     const user = this.get_user();
     if (user && user.favorites) {
