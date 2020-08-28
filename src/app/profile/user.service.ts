@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
-
-import { MovieDto } from '../models/movie-dto';
-import { UserDto } from '../models/user-dto';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { NgModel } from '@angular/forms';
+
+import { MovieDto } from '../models/movie-dto';
+import { UserDto } from '../models/user-dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-
-
   private currentUserSubject: BehaviorSubject<UserDto>;
   public currentUserObservable: Observable<UserDto>;
 
   private showFormSubject: BehaviorSubject<boolean>;;
   public showFormObservable: Observable<boolean>;
+
+  private subject = new Subject<any>();
 
   public b = true;
   constructor() {
@@ -28,9 +28,6 @@ export class UserService {
 
     this.showFormSubject = new BehaviorSubject<boolean>(false);
     this.showFormObservable = this.showFormSubject.asObservable();
-
-
-    console.log(this.get_user())
   }
 
   get_user() { return this.currentUserSubject.value }
@@ -39,11 +36,22 @@ export class UserService {
     const newUser = new UserDto();
     newUser.userId = data.user.uid;
     newUser.username = data.user.email;
-    newUser.favorites = await this.get_favorites();
+    newUser.favorites = await this.get_favorites(newUser.userId);
     return newUser;
   }
-  async get_favoritos(userId: string): Promise<MovieDto[]> {
-    return null;
+  private getAlertError(): Observable<any> {
+    return this.subject.asObservable();
+  }
+  success(message: string) {
+    this.subject.next({ type: 'success', text: message });
+  }
+
+  error(message: string) {
+    this.subject.next({ type: 'error', text: message });
+  }
+
+  clear() {
+    this.subject.next();
   }
 
 
@@ -88,9 +96,9 @@ export class UserService {
   async remove_favorite_movie(movie: MovieDto) {
     const user = this.get_user();
     const ref = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`);
-    try{
+    try {
       return await ref.remove();
-    }catch(ex){
+    } catch (ex) {
       console.error(ex);
     }
   }
@@ -108,15 +116,22 @@ export class UserService {
     }
     return false;
   }
-  private async get_favorites() {
-    const user = this.get_user();
-    const ref = await firebase.database().ref(`favorites/${user.userId}`).once('value');
-    const idMovieObjects = ref.val();
-    const result = [];
-    for (let mv of Object.values(idMovieObjects)) {
-      result.push(mv);
+  private async get_favorites(userID) {
+    try {
+
+      const ref = await firebase.database().ref(`favorites/${userID}`).once('value');
+      const idMovieObjects = ref.val();
+      if (!idMovieObjects)
+        return [];
+      const result = [];
+      for (let mv of Object.values(idMovieObjects)) {
+        result.push(mv);
+      }
+      return result;
+    } catch (ex) {
+      console.error(ex);
+      return [];
     }
-    return result;
   }
 
 }
