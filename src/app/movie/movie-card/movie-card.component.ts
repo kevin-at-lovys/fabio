@@ -16,12 +16,11 @@ export class MovieCardComponent implements OnInit {
   constructor(private _elmRef: ElementRef, private userService : UserService) { }
 
   ngOnInit(): void {
-    this.movie.favorite = this.userService.has_movie_favorite(this.movie);
     this.update_ui_element();
   }
   toggle_favorite() {
     this.movie.favorite = !this.movie.favorite;
-    this.userService.toggle_movie_favorite(this.movie);
+    
     this.update_ui_element();
   }
   private update_ui_element() {

@@ -23,17 +23,10 @@ export class UserService {
 
   get_user() { return this.currentUserSubject.value }
 
-  has_movie_favorite(movie: MovieDto): boolean {
-    const user = this.get_user();
-    if (user == null) return false;
-    if (!user.favorites || user.favorites.length == 0) return false;
-    return user.favorites.filter(o => o.id === movie.id).length > 0;
-  }
-  private async build_user(data) {
+  private build_user(data) {
     const newUser = new UserDto();
     newUser.userId = data.user.uid;
     newUser.username = data.user.email;
-    newUser.favorites = await this.get_favoritos(newUser.userId);
     return newUser;
   }
   async get_favoritos(userId: string): Promise<MovieDto[]> {
@@ -44,7 +37,10 @@ export class UserService {
   async login(username, password) {
     try {
       let _user_data = await firebase.auth().signInWithEmailAndPassword(username, password);
-      const user = await this.build_user(_user_data);
+      const user =  this.build_user(_user_data);
+      // for simplicity of the exercise ill save the user obj 
+      // in production we must not save the current user, 
+      // maybe use a session token to validate the user
       localStorage.setItem('currentUser', JSON.stringify(user));
       this.currentUserSubject.next(user);
       return user;
@@ -57,7 +53,10 @@ export class UserService {
   async register(username, password) {
     try {
       let _user_data = await firebase.auth().createUserWithEmailAndPassword(username, password);
-      const user = await this.build_user(_user_data);
+      const user =  this.build_user(_user_data);
+      // for simplicity of the exercise ill save the user obj 
+      // in production we must not save the current user, 
+      // maybe use a session token to validate the user
       localStorage.setItem('currentUser', JSON.stringify(user));
       this.currentUserSubject.next(user);
       return _user_data;
@@ -71,7 +70,4 @@ export class UserService {
     this.currentUserSubject.next(null);
   }
 
-  toggle_movie_favorite(movie: MovieDto) {
-
-  }
 }
