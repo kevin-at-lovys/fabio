@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ListComponent } from './movie/list/list.component';
 import { SigninComponent } from './profile/signin/signin.component';
 import { SignupComponent } from './profile/signup/signup.component';
 import { MovieCardComponent } from './movie/movie-card/movie-card.component';
@@ -22,7 +21,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
-    ListComponent,
     SigninComponent,
     SignupComponent,
     MovieCardComponent,

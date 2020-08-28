@@ -2,7 +2,7 @@
 <div class="navbar toolbar" role="banner">
 
     <span *ngIf="user">Welcome {{user.username}}</span>
-    <span>Welcome </span>
+    <span *ngIf="!user">Welcome </span>
     <div class="spacer"></div>
     <ul class="inline-list">
         <li><a routerLink="/home" routerLinkActive="active" class="nav-link">Explorer</a></li>
