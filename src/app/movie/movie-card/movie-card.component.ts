@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ElementRef } from '@angular/core';
 
 import { MovieDto } from '../../models/movie-dto';
 import { UserService } from "../../profile/user.service";
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -13,7 +14,8 @@ export class MovieCardComponent implements OnInit {
 
   @Input() movie: MovieDto
 
-  constructor(private _elmRef: ElementRef, private userService: UserService) {
+  constructor(private _elmRef: ElementRef, private userService: UserService,
+    private router: Router) {
 
 
   }
@@ -35,14 +37,15 @@ export class MovieCardComponent implements OnInit {
     });
   }
   toggle_favorite() {
+    if (!this.userService.get_user()) {
+      this.router.navigateByUrl("/login");
+      return;
+    }
     this.toggle_favorite_animation(true);
 
     this.movie.favorite = !this.movie.favorite;
 
-    if (!this.userService.get_user()) {
-      this.userService.requestUserLogin();
-      return;
-    }
+ 
 
     if (this.movie.favorite) {
       this.userService.add_favorite_movie(this.movie)
@@ -50,7 +53,7 @@ export class MovieCardComponent implements OnInit {
     }
     else {
       this.userService.remove_favorite_movie(this.movie)
-      .then(e => this.toggle_favorite_animation(false));;
+        .then(e => this.toggle_favorite_animation(false));;
     }
 
     this.update_ui_element();
