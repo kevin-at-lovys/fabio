@@ -1,1 +1,8 @@
-<p>favorites works!</p>
+<div class="trends-container">
+    <h2>Latest trends</h2>
+    <p>What do you want to do next with your app?</p>
+</div>
+<div class="card-container">
+    <app-movie-card *ngFor="let movie of movies " [movie]=movie>
+    </app-movie-card>
+</div>
