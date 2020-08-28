@@ -6,7 +6,7 @@
                 <label for="username">email</label>
                 <input type="email" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.username.errors}" />
                 <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                    <div *ngIf="f.username.errors.required">Emial is required</div>
+                    <div *ngIf="f.username.errors.required">Email is required</div>
                     <div>Emial is required</div>
                 </div>
             </div>
