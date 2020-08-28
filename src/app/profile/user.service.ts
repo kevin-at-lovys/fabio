@@ -40,10 +40,8 @@ export class UserService {
     return newUser;
   }
 
-  private async update_user_movies(){
-    this.get_user().favorites = await this.get_favorites(this.get_user().userId);
-  }
-  
+ 
+
   async login(username, password) {
     try {
       let _user_data = await firebase.auth().signInWithEmailAndPassword(username, password);
@@ -86,17 +84,18 @@ export class UserService {
     const user = this.get_user();
     const ref = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`);
     try {
-      let res = await ref.remove(); 
-      await this.update_user_movies();
+      let res = await ref.remove();
+      user.favorites = await this.get_favorites(user.userId);
       return res;
     } catch (ex) {
       console.error(ex);
-    } 
+    }
   }
   async add_favorite_movie(movie: MovieDto) {
     const user = this.get_user();
     let res = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`).set(movie);
-    await this.update_user_movies();
+    user.favorites = await this.get_favorites(user.userId);
+
     return res
   }
 
