@@ -18,9 +18,12 @@ export class SignupComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   error: any;
+  user: any;
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+
   ) {
     this.form = this.formBuilder.group({
       username: ['', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")],
@@ -47,6 +50,12 @@ export class SignupComponent implements OnInit {
 
     this.userService.register(this.f.username.value, this.f.password.value)
       .then(user => {
+        if(user){
+          if (!user.message) {
+            this.user = user;
+            this.router.navigateByUrl("/home")
+          } else { this.error = user.message }
+        }
         this.loading = false
       }).catch(err => {
         console.log(err)
