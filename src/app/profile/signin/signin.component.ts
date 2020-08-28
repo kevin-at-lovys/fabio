@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { first } from 'rxjs/operators';
+
 import { UserService } from '../user.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 
 @Component({
@@ -10,18 +11,25 @@ import { UserService } from '../user.service';
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent implements OnInit {
-  loginForm: FormGroup;
+  form: FormGroup;
   loading = false;
   submitted = false;
   returnUrl: string;
+  error: any;
+  user;
+
   constructor(
     private formBuilder: FormBuilder,
-    private userService : UserService
+    private userService: UserService,
+    private route: ActivatedRoute,
+    private router: Router,
+
   ) {
-    this.loginForm = this.formBuilder.group({
-      username: ['', Validators.required],
+    this.form = this.formBuilder.group({
+      username: ['', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")],
       password: ['', Validators.required]
     });
+
 
   }
 
@@ -31,7 +39,7 @@ export class SigninComponent implements OnInit {
   }
 
   // convenience getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
+  get f() { return this.form.controls; }
 
   onSubmit() {
     this.submitted = true;
@@ -40,16 +48,25 @@ export class SigninComponent implements OnInit {
     // this.alertService.clear();
 
     // stop here if form is invalid
-    if (this.loginForm.invalid) {
+    if (this.form.invalid) {
       return;
     }
 
     this.loading = true;
-    this.userService.login(this.f.username.value, this.f.password.value)
-    .then(user => {
-      
-    }).catch(err =>{
 
-    });
+    this.userService.login(this.f.username.value, this.f.password.value)
+      .then(user => {
+        this.loading = false;
+        if (user) {
+          if (!user.message) {
+            this.user = user;
+            this.router.navigateByUrl("/home")
+          } else { this.error = user.message }
+        }
+      }).catch(err => {
+        console.log(err)
+        this.error = err.message || err
+        this.loading = false
+      });
   }
 }

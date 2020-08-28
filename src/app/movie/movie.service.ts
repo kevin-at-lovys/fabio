@@ -3,6 +3,7 @@ import { Observable } from "rxjs";
 
 import { MovieDto } from '../models/movie-dto';
 import { HttpClient } from '@angular/common/http';
+import { utf8Encode } from '@angular/compiler/src/util';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class MovieService {
 
   private endPoints = {
     moviesGenres: "https://api.themoviedb.org/3/genre/movie/list?api_key=[API_KEY]&language=[API_LANG]",
-    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=878",
+    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=[GENRE]",
     moviesSearch: "https://api.themoviedb.org/3/search/movie?api_key=[api_key]&language=en-US&query=[QUERY]page=[PAGE]include_adult=false",
     lastTrends: "https://api.themoviedb.org/3/trending/movie/week?api_key=[API_KEY]",
     configuration: "",
@@ -45,6 +46,7 @@ export class MovieService {
   private createMovie(result: any) {
     let movieDto = new MovieDto();
 
+    movieDto.id = result.id;
     movieDto.overview = result.overview;
     movieDto.popularity = result.popularity;
     movieDto.title = result.title;
@@ -63,14 +65,40 @@ export class MovieService {
     return data.genres || [];
   }
   async get_movies_by_genre(genre: string, lang?: string) {
-    const _url = this.prepare_url(this.endPoints.moviesByDiscobery, lang);
+    let _url = this.prepare_url(this.endPoints.moviesByDiscobery, lang);
+    _url = _url.replace("[GENRE]", genre);
+    console.log(_url)
+    const movies = [];
     let data;
     try {
       data = await this.http.get<any>(_url).toPromise();
+      if (data.results) {
+        for (let result of data.results) {
+          movies.push(this.createMovie(result));
+        }
+      }
     } catch (ex) {
       console.error(ex);
     }
-    return data.movies || [];
+    delete data.results;
+    data.movies = movies;
+    return data;
   }
+  async get_genre_name(searchid: number): Promise<string> {
+    let cats : any = await this.get_movie_categories()
+    let result;
+    console.log(searchid)
+    for (let c of cats) {
+        console.log(c,searchid)
+      if (c.id == searchid){
+
+        result = c.name;
+        break;
+      }
+    }
+    console.log(result)
+    return result || "Not found";
+  }
+
 
 }

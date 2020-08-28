@@ -6,5 +6,5 @@ export class MovieDto {
     public releaseDate :  Date;
     public thumbnailImage :  string;
     public popularity :  string;
-    public favorite: boolean = true;
+    public favorite: boolean ;
 }

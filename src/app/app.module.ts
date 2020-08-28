@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,14 +16,9 @@ import { ExplorerComponent } from './page/explorer/explorer.component';
 import { ProfileComponent } from './page/profile/profile.component';
 import { FavoritesComponent } from './page/favorites/favorites.component';
 import { CategoryComponent } from './page/category/category.component';
+import { PaginationComponent } from './page/pagination/pagination.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
-const routes: Routes = [
-  { path: 'home', component: ExplorerComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'genre/:id', component: CategoryComponent },
-  { path: 'favorites', component: FavoritesComponent },
-  { path: '',   redirectTo: '/home', pathMatch: 'full' },
-];
 
 @NgModule({
   declarations: [
@@ -39,13 +33,15 @@ const routes: Routes = [
     CategoryCardComponent,
     ExplorerComponent,
     FavoritesComponent,
-    CategoryComponent
+    CategoryComponent,
+    PaginationComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(routes)
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

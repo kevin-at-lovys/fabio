@@ -1,4 +1,11 @@
+
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
+
+import { UserService } from '../user.service';
+
 
 @Component({
   selector: 'app-signup',
@@ -6,10 +13,44 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./signup.component.css']
 })
 export class SignupComponent implements OnInit {
+  form: FormGroup;
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+  error: any;
+  constructor(
+    private formBuilder: FormBuilder,
+    private userService: UserService
+  ) {
+    this.form = this.formBuilder.group({
+      username: ['', Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")],
+      password: ['', Validators.required]
+    });
 
-  constructor() { }
-
-  ngOnInit(): void {
   }
 
+  ngOnInit(): void {
+
+  }
+
+  // convenience getter for easy access to form fields
+  get f() { return this.form.controls; }
+
+  onSubmit() {
+    this.submitted = true;
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    this.loading = true;
+
+    this.userService.register(this.f.username.value, this.f.password.value)
+      .then(user => {
+        this.loading = false
+      }).catch(err => {
+        console.log(err)
+        this.loading = false
+      });
+  }
 }

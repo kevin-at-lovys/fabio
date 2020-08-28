@@ -1,1 +1,8 @@
-<p>category works!</p>
+<div class="trends-container">
+
+    <h2> <a routerLink="/home" class="btn btn-dark pl-4 pr-4">Go Back</a> Genre {{search_name}}</h2>
+</div>
+<div class="card-container">
+    <app-movie-card *ngFor="let movie of movies " [movie]=movie>
+    </app-movie-card>
+</div>

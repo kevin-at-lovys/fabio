@@ -1,1 +1,2 @@
-<p>profile works!</p>
+<app-signin *ngIf="!user"></app-signin>
+<button *ngIf="user" (click)="logout()">Logout</button>

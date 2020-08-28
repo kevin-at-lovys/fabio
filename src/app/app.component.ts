@@ -14,9 +14,7 @@ export class AppComponent {
   constructor(
     private userService : UserService
   ) {
-    //this.movieService.get_last_trends().then(_movies => this.movies = _movies);
-    //this.userService.login("f.almeida.work@gmail.com","teste3").then(data => console.log(data)).catch(err=> console.log(err))
-  }
+     } 
 
 }
  
