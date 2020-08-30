@@ -23,6 +23,7 @@ export class FavoritesComponent implements OnInit {
         console.log(this.movies)
       }
     });
+    this.userService.favoritesChangedObservable.subscribe({ next: (favs) => this.movies = favs });
   }
 
 }

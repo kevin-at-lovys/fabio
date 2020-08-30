@@ -18,17 +18,26 @@ export class UserService {
   private showFormSubject: BehaviorSubject<boolean>;;
   public showFormObservable: Observable<boolean>;
 
+  private favoritesChangedSubject: BehaviorSubject<MovieDto[]>;
+  public favoritesChangedObservable: Observable<MovieDto[]>;
+
+
 
 
   public b = true;
   constructor() {
+    firebase.initializeApp(environment.firebaseConfig)
+
     this.currentUserSubject = new BehaviorSubject<UserDto>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUserObservable = this.currentUserSubject.asObservable();
-    firebase.initializeApp(environment.firebaseConfig)
+
     if (this.get_user()) {
       let user = this.get_user();
       this.get_favorites(user.userId).then(favs => user.favorites = favs)
     }
+    const favs = this.get_user() ? this.get_user().favorites : [];
+    this.favoritesChangedSubject = new BehaviorSubject(favs);
+    this.favoritesChangedObservable = this.favoritesChangedSubject.asObservable();
 
     this.showFormSubject = new BehaviorSubject<boolean>(false);
     this.showFormObservable = this.showFormSubject.asObservable();
@@ -44,7 +53,7 @@ export class UserService {
     return newUser;
   }
 
-  save_local_user(user : UserDto) {
+  save_local_user(user: UserDto) {
     localStorage.setItem('currentUser', JSON.stringify(user));
   }
 
@@ -92,6 +101,7 @@ export class UserService {
     try {
       let res = await ref.remove();
       user.favorites = await this.get_favorites(user.userId);
+      this.favoritesChangedSubject.next(user.favorites)
       this.save_local_user(user);
       return res;
     } catch (ex) {
@@ -102,6 +112,7 @@ export class UserService {
     const user = this.get_user();
     let res = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`).set(movie);
     user.favorites = await this.get_favorites(user.userId);
+    this.favoritesChangedSubject.next(user.favorites);
     this.save_local_user(user);
     return res
   }
