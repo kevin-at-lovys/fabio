@@ -41,10 +41,14 @@ export class CategoryComponent implements OnInit {
   }
   private update_movies() {
     this.set_loading(true);
-    document.getElementById("back-button").scrollIntoView({
-      behavior: "smooth",
-      block: "end"
-    })
+    const btn = document.getElementById("back-button")
+    if (btn) {
+      btn.scrollIntoView({
+        behavior: "smooth",
+        block: "end"
+      })
+    }
+
     this.movieService.get_movies_by_genre(this.search, null, this.page)
       .then(e => {
         this.movies = e.movies;
