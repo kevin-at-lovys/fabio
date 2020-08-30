@@ -1,1 +1,3 @@
-<p>pagination works!</p>
+<div class="">
+    <a *ngFor="let cpage of _pages" (click)="go_to(cpage)" class="btn btn-dark {{cpage == page ? 'active' : ''}}">{{cpage}}</a>
+</div>

@@ -18,7 +18,7 @@ export class UserService {
   private showFormSubject: BehaviorSubject<boolean>;;
   public showFormObservable: Observable<boolean>;
 
-  private subject = new Subject<any>();
+  
 
   public b = true;
   constructor() {

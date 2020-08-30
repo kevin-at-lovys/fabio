@@ -8,3 +8,7 @@
 .trends-container {
     text-align: center !important;
 }
+
+.loading {
+    opacity: 0.2;
+}

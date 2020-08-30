@@ -1,8 +1,26 @@
 <div class="trends-container">
-
-    <h2> <a routerLink="/home" class="btn btn-dark pl-4 pr-4">Go Back</a> Genre {{search_name}}</h2>
+    <div class="row">
+        <div class="col-4"><a routerLink="/home" id="back-button" class="btn btn-dark pl-4 pr-4">Go Back</a></div>
+        <div class="col-4">
+            <app-pagination></app-pagination>
+        </div>
+        <div class="col-3">
+            <h2>{{search_name}}</h2>
+        </div>
+    </div>
 </div>
-<div class="card-container">
+<div id="movie-grid" class="card-container">
     <app-movie-card *ngFor="let movie of movies " [movie]=movie>
     </app-movie-card>
+</div>
+<div class="trends-container">
+    <div class="row">
+        <div class="col-4"><a routerLink="/home" id="back-button" class="btn btn-dark pl-4 pr-4">Go Back</a></div>
+        <div class="col-4">
+            <app-pagination></app-pagination>
+        </div>
+        <div class="col-3">
+            <h3 class="title"> {{search_name}}</h3>
+        </div>
+    </div>
 </div>

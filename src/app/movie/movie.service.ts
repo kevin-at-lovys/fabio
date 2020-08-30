@@ -14,7 +14,7 @@ export class MovieService {
 
   private endPoints = {
     moviesGenres: "https://api.themoviedb.org/3/genre/movie/list?api_key=[API_KEY]&language=[API_LANG]",
-    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&page=[PAGE]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=[GENRE]",
+    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&page=[PAGE]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&with_genres=[GENRE]",
     moviesSearch: "https://api.themoviedb.org/3/search/movie?api_key=[api_key]&page=[PAGE]&language=[API_LANG]&query=[QUERY]page=[PAGE]include_adult=false",
     lastTrends: "https://api.themoviedb.org/3/trending/movie/week?api_key=[API_KEY]&page=[PAGE]",
     configuration: "",
@@ -38,7 +38,7 @@ export class MovieService {
       ;
   }
 
-  async get_last_trends(lang?: string , page?: string) {
+  async get_last_trends(lang?: string, page?: string) {
 
     const _url = this.prepare_url(this.endPoints.lastTrends, lang, page);
     const movies = [];
@@ -50,10 +50,9 @@ export class MovieService {
     }
     delete data.results;
     data.movies = movies;
-    console.log(data)
     return data;
   }
-  
+
   private createMovie(result: any) {
     let movieDto = new MovieDto();
 
@@ -75,12 +74,12 @@ export class MovieService {
     }
     return data.genres || [];
   }
-  async get_movies_by_genre(genre: string, lang?: string) {
-    let _url = this.prepare_url(this.endPoints.moviesByDiscobery, lang);
-    _url = _url.replace("[GENRE]", genre);
-    console.log(_url)
+  async get_movies_by_genre(genre: string, lang?: string, page?: string) {
+
+    let _url = this.prepare_url(this.endPoints.moviesByDiscobery, lang, page);
+     _url = _url.replace("[GENRE]", genre);
     const movies = [];
-    let data;
+    let data; 
     try {
       data = await this.http.get<any>(_url).toPromise();
       if (data.results) {
@@ -92,6 +91,7 @@ export class MovieService {
       console.error(ex);
     }
     delete data.results;
+    data.name = await this.get_genre_name(+genre);
     data.movies = movies;
     return data;
   }
@@ -99,9 +99,7 @@ export class MovieService {
     let cats: any = await this.get_movie_categories()
     let result;
     for (let c of cats) {
-      console.log(c, searchid)
       if (c.id == searchid) {
-
         result = c.name;
         break;
       }

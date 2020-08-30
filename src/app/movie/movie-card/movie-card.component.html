@@ -1,5 +1,6 @@
 <div class="movie-card">
-    <img src="{{movie.thumbnailImage}}" />
+    <img class="dummy" src="https://i.pinimg.com/originals/a2/dc/96/a2dc9668f2cf170fe3efeb263128b0e7.gif" />
+    <img (load)="image_loaded_handler()" src="{{ movie.thumbnailImage}}" />
     <div class="topbar">
         <span class="favorite" (click)="toggle_favorite()">
             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor"

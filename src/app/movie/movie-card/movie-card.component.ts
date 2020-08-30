@@ -75,4 +75,9 @@ export class MovieCardComponent implements OnInit {
     }
   }
 
+  image_loaded_handler(){
+    let elm = this._elmRef.nativeElement.querySelector(".dummy");
+    elm.style.display = "none"
+  }
+
 }
