@@ -14,9 +14,9 @@ export class MovieService {
 
   private endPoints = {
     moviesGenres: "https://api.themoviedb.org/3/genre/movie/list?api_key=[API_KEY]&language=[API_LANG]",
-    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=[GENRE]",
-    moviesSearch: "https://api.themoviedb.org/3/search/movie?api_key=[api_key]&language=en-US&query=[QUERY]page=[PAGE]include_adult=false",
-    lastTrends: "https://api.themoviedb.org/3/trending/movie/week?api_key=[API_KEY]",
+    moviesByDiscobery: "https://api.themoviedb.org/3/discover/movie?api_key=[API_KEY]&page=[PAGE]&language=[API_LANG]&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&with_genres=[GENRE]",
+    moviesSearch: "https://api.themoviedb.org/3/search/movie?api_key=[api_key]&page=[PAGE]&language=[API_LANG]&query=[QUERY]page=[PAGE]include_adult=false",
+    lastTrends: "https://api.themoviedb.org/3/trending/movie/week?api_key=[API_KEY]&page=[PAGE]",
     configuration: "",
     images: "https://image.tmdb.org/t/p/w500"
   };
@@ -24,16 +24,23 @@ export class MovieService {
 
   constructor(private http: HttpClient) { }
 
-  private prepare_url(url: string, lang?: string): string {
+  private prepare_url(url: string, lang?: string, page?: string): string {
+
     if (!lang || this.acceptedLanguages.indexOf(lang) == -1)
       lang = this.acceptedLanguages[0];
+    if (!page)
+      page = "1"
 
-    return url.replace("[API_KEY]", this.API_KEY).replace("[API_LANG]", lang);
+    return url
+      .replace("[API_KEY]", this.API_KEY)
+      .replace("[PAGE]", page)
+      .replace("[API_LANG]", lang)
+      ;
   }
 
-  async get_last_trends(lang: string = "en-US") {
+  async get_last_trends(lang?: string , page?: string) {
 
-    const _url = this.prepare_url(this.endPoints.lastTrends, lang);
+    const _url = this.prepare_url(this.endPoints.lastTrends, lang, page);
     const movies = [];
     const data = await this.http.get<any>(_url).toPromise();
     if (data.results) {
@@ -41,8 +48,12 @@ export class MovieService {
         movies.push(this.createMovie(result));
       }
     }
-    return movies;
+    delete data.results;
+    data.movies = movies;
+    console.log(data)
+    return data;
   }
+  
   private createMovie(result: any) {
     let movieDto = new MovieDto();
 
@@ -85,18 +96,16 @@ export class MovieService {
     return data;
   }
   async get_genre_name(searchid: number): Promise<string> {
-    let cats : any = await this.get_movie_categories()
+    let cats: any = await this.get_movie_categories()
     let result;
-    console.log(searchid)
     for (let c of cats) {
-        console.log(c,searchid)
-      if (c.id == searchid){
+      console.log(c, searchid)
+      if (c.id == searchid) {
 
         result = c.name;
         break;
       }
     }
-    console.log(result)
     return result || "Not found";
   }
 

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {PaginationService} from './pagination.service'
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-pagination',
@@ -7,9 +9,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PaginationComponent implements OnInit {
 
-  constructor() { }
+  page:number;
+  max_pages:number;
+  total_pages:number;
+  constructor(private route: ActivatedRoute) {
+
+   }
 
   ngOnInit(): void {
+    this.page = +this.route.snapshot.paramMap.get('page');
   }
 
 }
