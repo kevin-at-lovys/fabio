@@ -42,7 +42,7 @@ export class PaginationComponent implements OnInit {
     let current = +this.page;
     let start = 1;
 
-    let end = start + this.number_of_pages_to_show;
+    let end = start + this.number_of_pages_to_show-1;
     
     if (current + half  > end)
       end = current + half
