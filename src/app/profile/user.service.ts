@@ -18,13 +18,17 @@ export class UserService {
   private showFormSubject: BehaviorSubject<boolean>;;
   public showFormObservable: Observable<boolean>;
 
-  
+
 
   public b = true;
   constructor() {
     this.currentUserSubject = new BehaviorSubject<UserDto>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUserObservable = this.currentUserSubject.asObservable();
     firebase.initializeApp(environment.firebaseConfig)
+    if (this.get_user()) {
+      let user = this.get_user();
+      this.get_favorites(user.userId).then(favs => user.favorites = favs)
+    }
 
     this.showFormSubject = new BehaviorSubject<boolean>(false);
     this.showFormObservable = this.showFormSubject.asObservable();
@@ -40,7 +44,9 @@ export class UserService {
     return newUser;
   }
 
- 
+  save_local_user(user : UserDto) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
 
   async login(username, password) {
     try {
@@ -49,7 +55,7 @@ export class UserService {
       // for simplicity of the exercise ill save the user obj 
       // in production we must not save the current user, 
       // maybe use a session token to validate the user
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.save_local_user(user);
       this.currentUserSubject.next(user);
       return user;
     } catch (ex) {
@@ -65,7 +71,7 @@ export class UserService {
       // for simplicity of the exercise ill save the user obj 
       // in production we must not save the current user, 
       // maybe use a session token to validate the user
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.save_local_user(user);
       this.currentUserSubject.next(user);
       return _user_data;
     } catch (ex) {
@@ -86,6 +92,7 @@ export class UserService {
     try {
       let res = await ref.remove();
       user.favorites = await this.get_favorites(user.userId);
+      this.save_local_user(user);
       return res;
     } catch (ex) {
       console.error(ex);
@@ -95,7 +102,7 @@ export class UserService {
     const user = this.get_user();
     let res = await firebase.database().ref(`favorites/${user.userId}/${movie.id}`).set(movie);
     user.favorites = await this.get_favorites(user.userId);
-
+    this.save_local_user(user);
     return res
   }
 

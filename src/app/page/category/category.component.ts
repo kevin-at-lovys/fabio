@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { MovieDto } from 'src/app/models/movie-dto';
 import { MovieService } from 'src/app/movie/movie.service';
 import { PaginationService } from '../pagination/pagination.service';
+import { elementAt } from 'rxjs/operators';
 
 @Component({
   selector: 'app-category',
@@ -56,10 +57,13 @@ export class CategoryComponent implements OnInit {
   }
 
   set_loading(loading) {
+    const elm = document.getElementById("movie-grid");
+    if (!elm)
+      return;
     if (loading) {
-      document.getElementById("movie-grid").classList.add("loading");
+      elm.classList.add("loading");
     } else {
-      document.getElementById("movie-grid").classList.remove("loading");
+      elm.classList.remove("loading");
     }
 
   }

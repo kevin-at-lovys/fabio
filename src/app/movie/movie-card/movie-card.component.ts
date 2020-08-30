@@ -37,16 +37,12 @@ export class MovieCardComponent implements OnInit {
     });
   }
   toggle_favorite() {
+    this.toggle_favorite_animation(true);
     if (!this.userService.get_user()) {
       this.router.navigateByUrl("/login");
       return;
     }
-    this.toggle_favorite_animation(true);
-
     this.movie.favorite = !this.movie.favorite;
-
- 
-
     if (this.movie.favorite) {
       this.userService.add_favorite_movie(this.movie)
         .then(e => this.toggle_favorite_animation(false));

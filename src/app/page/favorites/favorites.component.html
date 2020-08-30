@@ -1,6 +1,10 @@
 <div class="trends-container">
     <h2>Your favorites</h2>
     <p>this is a list of your favorite movies</p>
+    <div *ngIf="movies.length == 0">
+        <h2>You dont have any favorites in your account!</h2>
+        <h4>Start adding movies to your favorite list</h4>
+    </div>
 </div>
 <div class="card-container">
     <app-movie-card *ngFor="let movie of movies " [movie]=movie>
